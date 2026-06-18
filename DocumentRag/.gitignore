@@ -1,0 +1,13 @@
+# Credentials — never commit these
+.env
+
+# Vector store (rebuild via ingest.py)
+vectorstore/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Temp files
+*.tmp

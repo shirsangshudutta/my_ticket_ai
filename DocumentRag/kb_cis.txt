@@ -1,0 +1,265 @@
+📄 CIS Integration Patterns Reference Document
+🔹 Purpose
+
+Define standardized system-to-system integration patterns for cloud-native architectures, enabling:
+
+Consistent design decisions
+AI-driven pattern selection
+Automated infrastructure provisioning
+🧠 Core Concepts
+System-to-System (CIS)
+Backend service ↔ backend service
+No human interaction
+Driven by APIs, events, queues, streams, or batch
+Integration Dimensions
+Dimension	Values
+Communication	Sync / Async
+Coupling	Tight / Loose
+Data Transfer	Claim Check / Non-Claim
+Latency	Low / Medium / High
+Reliability	Medium / High
+📊 CIS Integration Patterns Catalog
+1️⃣ Request–Response (API → API)
+
+Description:
+Synchronous communication where the caller waits for response.
+
+Characteristics:
+
+Sync
+Tight coupling
+Non-Claim Check
+
+Use Cases:
+
+Payment processing
+Authentication
+Inventory check
+
+Example:
+
+Checkout Service → Payment API → Response
+
+Azure Services:
+
+API Management
+App Service
+2️⃣ API Aggregation Pattern
+
+Description:
+Single API composes responses from multiple downstream APIs.
+
+Characteristics:
+
+Sync
+Non-Claim Check
+
+Use Cases:
+
+Product page (price + stock + reviews)
+Employee dashboard
+3️⃣ Orchestration (Saga Pattern)
+
+Description:
+Central coordinator manages multi-step distributed transaction.
+
+Characteristics:
+
+Mixed (Sync + Async)
+Medium coupling
+
+Use Cases:
+
+Order processing
+Employee onboarding
+4️⃣ Asynchronous Messaging (API → Queue)
+
+Description:
+Producer sends message to queue; consumer processes later.
+
+Characteristics:
+
+Async
+Loose coupling
+Claim Check preferred
+
+Use Cases:
+
+Order processing
+Payroll requests
+5️⃣ Worker Pattern (Queue → API)
+
+Description:
+Background worker consumes queue and processes tasks.
+
+Characteristics:
+
+Async
+Claim Check
+
+Use Cases:
+
+Resume parsing
+Order fulfillment
+6️⃣ Publish–Subscribe (Event → Event)
+
+Description:
+Event broadcast to multiple subscribers.
+
+Characteristics:
+
+Async
+Very loose coupling
+Claim Check recommended
+
+Use Cases:
+
+Order → analytics, inventory, notification
+Hiring → multiple systems
+7️⃣ Event-Triggered Processing (Event → API)
+
+Description:
+Event triggers downstream processing service.
+
+Characteristics:
+
+Async
+Claim Check
+
+Use Cases:
+
+Stock update triggers alert
+Leave approval triggers payroll
+8️⃣ Event Publishing (API → Event)
+
+Description:
+API emits event without waiting for consumers.
+
+Characteristics:
+
+Async
+Claim Check
+
+Use Cases:
+
+Order created
+Resume uploaded
+9️⃣ External API Integration
+
+Description:
+System interacts with third-party APIs.
+
+Characteristics:
+
+Sync
+Non-Claim Check
+
+Use Cases:
+
+Payment gateway
+Background verification
+🔟 Batch Processing (Batch → Batch / DB)
+
+Description:
+Scheduled bulk data processing.
+
+Characteristics:
+
+Async
+Claim Check
+
+Use Cases:
+
+Payroll
+Sales aggregation
+1️⃣1️⃣ Streaming Pattern (API → Stream)
+
+Description:
+Continuous real-time data ingestion.
+
+Characteristics:
+
+Async
+Non-Claim (small messages)
+
+Use Cases:
+
+Clickstream
+Activity tracking
+1️⃣2️⃣ Real-time Processing (Stream → API)
+
+Description:
+Process streaming data in near real-time.
+
+Characteristics:
+
+Async
+Low latency
+
+Use Cases:
+
+Fraud detection
+Attendance anomaly
+1️⃣3️⃣ Cache Pattern (API ↔ Cache)
+
+Description:
+Use cache for fast read/write operations.
+
+Characteristics:
+
+Sync
+Non-Claim Check
+
+Use Cases:
+
+Product catalog
+Employee lookup
+1️⃣4️⃣ File-based Integration (API ↔ File)
+
+Description:
+Systems exchange files via storage.
+
+Characteristics:
+
+Async
+Claim Check
+
+Use Cases:
+
+Invoice generation
+Resume upload
+🧠 Claim Check Pattern (Cross-cutting)
+
+Definition:
+Instead of sending full payload, send a reference (URL/ID).
+
+Example
+Service → Blob Storage (store file)
+        → Send message with file URL
+        → Consumer retrieves file
+When to Use
+Condition	Use Claim Check
+Large payload (>256KB)	Yes
+Binary data (PDF/image)	Yes
+High throughput	Yes
+Small JSON (<10KB)	No
+⚙️ Pattern Selection Guidelines
+Requirement	Pattern
+Low latency	API → API
+High scalability	Event / Queue
+Loose coupling	Pub-Sub
+Long-running	Async
+Bulk data	Batch
+Real-time analytics	Streaming
+Large payload	Claim Check
+🏗️ Azure CIS Service Mapping
+Capability	Azure Service
+API Gateway	API Management
+Messaging Queue	Service Bus
+Eventing	Event Grid
+Streaming	Event Hub
+Workflow	Logic Apps
+Compute	Functions / AKS
+Data Integration	Data Factory
+Storage	Blob Storage
+Cache	Redis
